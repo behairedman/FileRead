@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
-
+using System.Data;
+using System.Data.OleDb;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,59 +21,56 @@ namespace FileRead
 
             //https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/file-system/how-to-read-from-a-text-file
 
-            // One String
-            //string text = System.IO.File.ReadAllText(@"C:\Users\BastianHartmann\source\repos\behairedman\FileRead\FileReadCSV\CSVs\Output.csv");
-
-
-            // As Array
-            //string[] lines = System.IO.File.ReadAllLines(@"C:\Users\BastianHartmann\source\repos\behairedman\FileRead\FileReadCSV\CSVs\Output.csv");
-
-            //string[] header = lines[0].Split(",");
-            //foreach (var h in header)
-            //{
-            //    Console.WriteLine(h);
-            //}
-
-
             // Datable
             // https://docs.microsoft.com/en-us/dotnet/api/system.data.datatable?view=net-5.0
 
-            //CSVModel output = new CSVModel(@"C:\Users\BastianHartmann\source\repos\behairedman\FileRead\FileReadCSV\CSVs\Output.csv", ",");
-
-            //Console.WriteLine($"{output.name}");
-            //Console.WriteLine($"{output.header[0]}, {output.header[1]}, {output.header[2]}");
-            //Console.WriteLine($"{output.content[0]}");
 
             //// https://stackoverflow.com/questions/17795167/xml-loaddata-data-at-the-root-level-is-invalid-line-1-position-1
-            //XmlDocument xmlDoc = new XmlDocument();
 
-            //XmlDocument xmlDoc = new XmlDocument();
-            ////xmlDoc.Load(@"C:\Users\BastianHartmann\source\repos\behairedman\FileRead\FileReadCSV\xlsx\Uebungs1.xlsx\xl\sharedStrings.xml");
+            ////https://www.codingame.com/playgrounds/9014/read-write-excel-file-with-oledb-in-c-without-interop
+            //string szConnectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\BastianHartmann\source\repos\behairedman\FileRead\FileReadCSV\xlsx\Uebungs1.xlsx; Extended Properties='Excel 12.0;'";
 
-            //xmlDoc.Load(@"C:\Users\BastianHartmann\source\repos\behairedman\FileRead\FileReadCSV\xlsx\xl\sharedStrings.xml");
-            //string xmlText = xmlDoc.InnerXml;
+            string path = @"C:\Users\BastianHartmann\source\repos\behairedman\FileRead\FileReadCSV\xlsx\Uebungs1 - Kopie.xlsx";
+            string connStr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + path + ";Extended Properties=Excel 12.0;";
 
-            //DataSet ds = new DataSet();
-            //ds.ReadXml(@"C:\Users\BastianHartmann\source\repos\behairedman\FileRead\FileReadCSV\xlsx\xl\sharedStrings.xml");
+            using (OleDbConnection connection = new(connStr))
+            {
+                connection.Open();
 
+                OleDbDataAdapter OleDBDataAdaper = new OleDbDataAdapter("select * from [Sheet1$]", connection);
+                DataSet excelDataSet = new DataSet();
+                OleDBDataAdaper.Fill(excelDataSet);
 
-            //Console.WriteLine(ds.Tables[2]);
-
-            // Connect EXCEL sheet with OLEDB using connection string
-            // if the File extension is .XLS using below connection string
-            //In following sample 'szFilePath' is the variable for filePath
-            //string szConnectionString = @"Provider=Microsoft.Jet.OLEDB.4.0;
-            //           "Data Source = '" + szFilePath + 
-            //           "';Extended Properties=\"Excel 8.0;HDR=YES;\"";
-
-            // if the File extension is .XLSX using below connection string
+                //Inhalt auf Excelmodel mappen
+                //schema anschauen um header zu generieren
 
 
 
+                //using (StreamWriter file = File.AppendText(@"C:\Users\BastianHartmann\source\repos\behairedman\FileRead\FileReadCSV\xlsx\Uebungs1 - Kopie.csv"))
+                //{
+                //    foreach (DataRow row in excelDataSet.Tables[0].Rows)
+                //    {
+                //        foreach (var column in row.ItemArray)
+                //        {
+                //            file.Write($"{column},");
+                //        }
+                //        file.WriteLine($"{Environment.NewLine}");
+
+                //        Console.WriteLine();
+                //    }
+                //}
 
 
 
-           
+
+                connection.Close();
+            }
+
+
+
+
+
+
         }
     }
 }
